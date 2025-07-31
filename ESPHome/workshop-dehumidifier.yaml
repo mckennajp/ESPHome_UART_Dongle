@@ -1,0 +1,93 @@
+esphome:
+  name: "workshop-dehumidifier"
+  friendly_name: Workshop_Dehumidifier
+
+esp32:
+  board: esp32-s3-devkitc-1
+  framework:
+    type: arduino
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  encryption:
+    key: "replacewithyourownapikey"
+
+ota:
+  - platform: esphome
+    password: "replacewithyourownotakey"
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Workshop-Dehumidifier"
+    password: "dehumidifier"
+
+captive_portal:
+    
+uart:
+  tx_pin: GPIO01
+  rx_pin: GPIO02
+  baud_rate: 9600
+
+
+    #  debug:
+#    direction: BOTH
+#    dummy_receiver: true
+#    after:
+#      delimiter: "\r\n"
+#    sequence:
+#      - lambda: UARTDebug::log_string(direction, bytes);
+
+
+web_server:
+  port: 80
+  version: 2
+
+  
+external_components:
+  - source:
+      type: local
+      path: local_components
+    components: [midea_mad50_uart,uart_multi, chenyang]
+
+midea_mad50_uart:
+
+switch:
+  - platform: midea_mad50_uart
+    type: power_switch
+    name: MAD50 Power
+  - platform: midea_mad50_uart
+    type: pump_switch
+    name: MAD50 Pump
+  - platform: restart
+    name: "Dongle Restart"
+
+number:
+  - platform: midea_mad50_uart
+    type: set_point
+    name: MAD50 SetPoint
+    unit_of_measurement: "%"
+
+sensor:
+  - platform: midea_mad50_uart
+    type: humidity
+    name: MAD50 Humidity
+
+text_sensor:
+  - platform: midea_mad50_uart
+    type: status
+    name: MAD50 Status
+ 
+select:
+  - platform: midea_mad50_uart
+    type: mode
+    name: MAD50 Mode 
+  - platform: midea_mad50_uart
+    type: fan
+    name: MAD50 Fan   
