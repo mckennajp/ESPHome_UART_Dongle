@@ -49,12 +49,8 @@ web_server:
   port: 80
   version: 2
 
-  
 external_components:
-  - source:
-      type: local
-      path: local_components
-    components: [midea_mad50_uart,uart_multi, chenyang]
+  - source: github://mckennajp/ESPHome_UART_Dongle
 
 midea_mad50_uart:
 
